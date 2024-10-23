@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/fragment_add_task">
+
+    <fragment
+        android:id="@+id/fragment_add_task"
+        android:name="com.example.stodoapp.data.fragments.AddTaskFragment"
+        android:label="Agregar Tarea"
+        tools:layout="@layout/fragment_add_task">
+        <action
+            android:id="@+id/action_add_task_to_task_details"
+            app:destination="@id/fragment_task_details" />
+        <action
+            android:id="@+id/action_add_task_to_completed_tasks"
+            app:destination="@id/fragment_completed_tasks" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_completed_tasks"
+        android:name="com.example.stodoapp.data.fragments.CompletedTasksFragment"
+        android:label="Tareas Completadas"
+        tools:layout="@layout/fragment_completed_tasks"/>
+
+    <fragment
+        android:id="@+id/fragment_task_details"
+        android:name="com.example.stodoapp.data.fragments.TaskDetailsFragment"
+        android:label="Detalles de la Tarea"
+        tools:layout="@layout/fragment_task_details" />
+</navigation>
