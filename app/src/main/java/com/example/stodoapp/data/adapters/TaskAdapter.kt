@@ -41,10 +41,9 @@ class TaskAdapter(
 
             itemView.setOnClickListener { onTaskClick(task) }
 
-            // Evita ciclos infinitos al cambiar el estado del CheckBox
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 task.isCompleted = isChecked
-                onTaskChecked(task)  // Actualiza el estado en el ViewModel
+                onTaskChecked(task)
             }
 
 

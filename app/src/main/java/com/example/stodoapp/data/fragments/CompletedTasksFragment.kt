@@ -18,18 +18,18 @@ import com.example.stodoapp.data.viewModel.TaskViewModel
 class CompletedTasksFragment : Fragment() {
 
     private lateinit var taskAdapter: TaskAdapter
-    private lateinit var taskViewModel: TaskViewModel // Declaración de taskViewModel
+    private lateinit var taskViewModel: TaskViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_completed_tasks, container, false)
 
-        // Inicializa el RecyclerView
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewCompletedTasks)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Inicializa el TaskAdapter
+
         taskAdapter = TaskAdapter(
             onTaskClick = { task -> navigateToTaskDetails(task) },
             onTaskChecked = { task -> taskViewModel.updateTaskCompletion(task) },
@@ -37,10 +37,9 @@ class CompletedTasksFragment : Fragment() {
         )
         recyclerView.adapter = taskAdapter
 
-        // Inicializa el ViewModel
+
         taskViewModel = ViewModelProvider(requireActivity()).get(TaskViewModel::class.java)
 
-        // Observa las tareas completadas
         taskViewModel.completedTasks.observe(viewLifecycleOwner) { tasks ->
             taskAdapter.submitList(tasks)
         }
@@ -48,7 +47,7 @@ class CompletedTasksFragment : Fragment() {
         return view
     }
 
-    // Función para navegar a TaskDetailsFragment
+
     private fun navigateToTaskDetails(task: Task) {
         val action = CompletedTasksFragmentDirections.actionCompletedTasksToTaskDetails(task)
         findNavController().navigate(action)
