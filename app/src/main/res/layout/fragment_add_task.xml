@@ -32,7 +32,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTasks"
-            android:layout_width="387dp"
+            android:layout_width="match_parent"
             android:layout_height="444dp"
             android:layout_marginTop="16dp" />
 

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,7 +15,8 @@ import com.example.stodoapp.data.models.Task
 
 class TaskAdapter(
     private val onTaskClick: (Task) -> Unit,
-    private val onTaskChecked: (Task) -> Unit
+    private val onTaskChecked: (Task) -> Unit,
+    private val onTaskDelete: (Task) -> Unit
 ) : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -24,21 +26,30 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = getItem(position)
-        holder.bind(task, onTaskClick, onTaskChecked)
+        holder.bind(task, onTaskClick, onTaskChecked,onTaskDelete)
+
     }
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val titleTextView: TextView = itemView.findViewById(R.id.textViewTaskName)
         private val checkBox: CheckBox = itemView.findViewById(R.id.checkBoxTask)
+        private val deleteButton: ImageButton = itemView.findViewById(R.id.buttonDeleteTask)
 
-        fun bind(task: Task, onTaskClick: (Task) -> Unit, onTaskChecked: (Task) -> Unit) {
+        fun bind(task: Task, onTaskClick: (Task) -> Unit, onTaskChecked: (Task) -> Unit, onTaskDelete: (Task) -> Unit) {
             titleTextView.text = task.title
             checkBox.isChecked = task.isCompleted
 
             itemView.setOnClickListener { onTaskClick(task) }
+
+            // Evita ciclos infinitos al cambiar el estado del CheckBox
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 task.isCompleted = isChecked
-                onTaskChecked(task)
+                onTaskChecked(task)  // Actualiza el estado en el ViewModel
+            }
+
+
+            deleteButton.setOnClickListener {
+                onTaskDelete(task)
             }
         }
     }

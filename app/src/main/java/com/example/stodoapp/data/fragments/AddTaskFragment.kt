@@ -26,6 +26,7 @@ class AddTaskFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var completedButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,23 +34,21 @@ class AddTaskFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_task, container, false)
 
-
         titleEditText = view.findViewById(R.id.editTextTask)
         descriptionEditText = view.findViewById(R.id.editTextDescription)
         addButton = view.findViewById(R.id.buttonAddTask)
-
-
+        completedButton = view.findViewById(R.id.buttonCompletedTasks)
         recyclerView = view.findViewById(R.id.recyclerViewTasks)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-
-
-        taskAdapter = TaskAdapter(
-            onTaskClick = { task ->  },
-            onTaskChecked = { task -> taskViewModel.updateTaskCompletion(task) }
-        )
-        recyclerView.adapter = taskAdapter
 
         taskViewModel = ViewModelProvider(requireActivity()).get(TaskViewModel::class.java)
+
+        taskAdapter = TaskAdapter(
+            onTaskClick = { task -> navigateToTaskDetails(task) },
+            onTaskChecked = { task -> taskViewModel.updateTaskCompletion(task) },
+            onTaskDelete = { task -> taskViewModel.deleteTask(task) }
+        )
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = taskAdapter
 
 
         taskViewModel.pendingTasks.observe(viewLifecycleOwner) { tasks ->
@@ -57,22 +56,16 @@ class AddTaskFragment : Fragment() {
         }
 
         addButton.setOnClickListener { addTask() }
-
-
-        val buttonCompletedTasks: Button = view.findViewById(R.id.buttonCompletedTasks)
-        buttonCompletedTasks.setOnClickListener {
-            findNavController().navigate(R.id.fragment_completed_tasks)
-        }
+        completedButton.setOnClickListener { navigateToCompletedTasks() }
 
         return view
     }
-
     private fun addTask() {
-        val title = titleEditText.text.toString()
-        val description = descriptionEditText.text.toString()
+        val title = titleEditText.text.toString().trim()
+        val description = descriptionEditText.text.toString().trim()
 
         if (title.isNotEmpty() && description.isNotEmpty()) {
-            val newTask = Task(id = generateTaskId(), title = title, description = description)
+            val newTask = Task(title = title, description = description)
             taskViewModel.addTask(newTask)
             titleEditText.text.clear()
             descriptionEditText.text.clear()
@@ -82,7 +75,13 @@ class AddTaskFragment : Fragment() {
         }
     }
 
-    private fun generateTaskId(): Int {
-        return (System.currentTimeMillis() % 1000).toInt()
+    private fun navigateToTaskDetails(task: Task) {
+        val action = AddTaskFragmentDirections.actionAddTaskToTaskDetails(task)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToCompletedTasks() {
+        val action = AddTaskFragmentDirections.actionAddTaskToCompletedTasks()
+        findNavController().navigate(action)
     }
 }
